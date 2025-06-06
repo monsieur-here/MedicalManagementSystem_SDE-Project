@@ -1,29 +1,39 @@
 package com.medicalManagement.model;
 
 public class Doctor {
-    private int id;
+    private int doctorId;
     private String name;
-    private int age;
-    private String gender;
+    private String specialization;
+    private String contactNumber;
+    private String availability;
+    private int staffId;
 
     public Doctor() {}
 
-    public Doctor(int id, String name, int age, String gender) {
-        this.id = id;
+    public Doctor(int doctorId, String name, String specialization, String contactNumber, String availability, int staffId) {
+        this.doctorId = doctorId;
         this.name = name;
-        this.age = age;
-        this.gender = gender;
+        this.specialization = specialization;
+        this.contactNumber = contactNumber;
+        this.availability = availability;
+        this.staffId = staffId;
     }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getDoctorId() { return doctorId; }
+    public void setDoctorId(int doctorId) { this.doctorId = doctorId; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public int getAge() { return age; }
-    public void setAge(int age) { this.age = age; }
+    public String getSpecialization() { return specialization; }
+    public void setSpecialization(String specialization) { this.specialization = specialization; }
 
-    public String getGender() { return gender; }
-    public void setGender(String gender) { this.gender = gender; }
-}
+    public String getContactNumber() { return contactNumber; }
+    public void setContactNumber(String contactNumber) { this.contactNumber = contactNumber; }
+
+    public String getAvailability() { return availability; }
+    public void setAvailability(String availability) { this.availability = availability; }
+
+    public int getStaffId() { return staffId; }
+    public void setStaffId(int staffId) { this.staffId = staffId; }
+} 
