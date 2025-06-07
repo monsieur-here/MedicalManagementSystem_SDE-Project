@@ -5,12 +5,19 @@ import java.sql.*;
 import java.util.*;
 
 public class PatientDAO {
-    private Connection conn;
+    private final String jdbcURL = "jdbc:mysql://localhost:3306/doctor_management";
+    private final String jdbcUser = "root";
+    private final String jdbcPassword = "admin";
 
-    public PatientDAO(Connection conn) {
-        this.conn = conn;
+    private Connection getConnection() throws SQLException {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return DriverManager.getConnection(jdbcURL, jdbcUser, jdbcPassword);
     }
-
+    
     public boolean insertPatient(Patient p) throws SQLException {
         String sql = "INSERT INTO patients (first_name, last_name, email, password_hash) VALUES (?, ?, ?, ?)";
         PreparedStatement stmt = conn.prepareStatement(sql);
