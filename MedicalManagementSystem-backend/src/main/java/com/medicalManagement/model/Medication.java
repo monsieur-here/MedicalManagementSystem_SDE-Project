@@ -3,17 +3,25 @@ package com.medicalManagement.model;
 import java.sql.Date;
 
 public class Medication {
-	private int diagnosisId;
+	private int medicationId;
 	private String medicationName;
 	private String dosage;
 	private String frequency;
 	private Date dateIssued;
 	
-	public int getDiagnosisId() {
-		return diagnosisId;
+	public Medication(int mddicationId, String medicationName, String dosage, String frequency, Date dateIssued) {
+		// TODO Auto-generated constructor stub
+		this.medicationId = medicationId;
+		this.medicationName = medicationName;
+		this.frequency = frequency;
+		this.dateIssued = dateIssued;
 	}
-	public void setDiagnosisId(int diagnosisId) {
-		this.diagnosisId = diagnosisId;
+	
+	public int getMedicationId() {
+		return medicationId;
+	}
+	public void setDiagnosisId(int medicationId) {
+		this.medicationId = medicationId;
 	}
 	public String getMedicationName() {
 		return medicationName;

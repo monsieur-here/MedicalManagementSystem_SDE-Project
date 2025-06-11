@@ -1,67 +1,113 @@
 package com.medicalManagement.model;
 
+import java.sql.Time;
+
 public class StaffSupport {
-    private int id;
-    private String designation;
-    private String name;
-    private String gender;
-    private String contact_number;
-    private String staff_availability;
+	 private int staffId;
+	    private String name;
+	    private String designation;  // Doctor, Receptionist, Nurse...
+	    private String gender;
+	    private String contactNumber;
+	    
+	    private String specialist;   // can be null for Receptionists
+	    private String staff_availability;
+	    private Time shiftStart;
+	    private Time shiftEnd;
+	    private String email;
+	    private String password;
 
-    public StaffSupport() {}
-    
-    public StaffSupport(int id, String name, String gender) {
-        this.id = id;
-        this.name = name;
-        this.gender = gender;
-    }
+	    public StaffSupport() {}
 
-	public int getId() {
-		return id;
-	}
+	    public StaffSupport(int staffId, String name, String designation, String gender, String contactNumber,
+	                     String specialist) {
+	        this.staffId = staffId;
+	        this.name = name;
+	        this.designation = designation;
+	        this.gender = gender;
+	        this.contactNumber = contactNumber;
+	        this.specialist = specialist;
+	    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+		public int getStaffId() {
+			return staffId;
+		}
 
-	public String getDesignation() {
-		return designation;
-	}
+		public void setStaffId(int staffId) {
+			this.staffId = staffId;
+		}
 
-	public void setDesignation(String designation) {
-		this.designation = designation;
-	}
+		public String getName() {
+			return name;
+		}
 
-	public String getName() {
-		return name;
-	}
+		public void setName(String name) {
+			this.name = name;
+		}
+		
+		public String getDesignation() {
+			return designation;
+		}
 
-	public void setName(String name) {
-		this.name = name;
-	}
+		public void setDesignation(String designation) {
+			this.designation = designation;
+		}
+		
+		public String getGender() {
+			return gender;
+		}
 
-	public String getGender() {
-		return gender;
-	}
+		public void setGender(String gender) {
+			this.gender = gender;
+		}
 
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
+		public String getContactNumber() {
+			return contactNumber;
+		}
 
-	public String getContact_number() {
-		return contact_number;
-	}
+		public void setContactNumber(String contactNumber) {
+			this.contactNumber = contactNumber;
+		}
 
-	public void setContact_number(String contact_number) {
-		this.contact_number = contact_number;
-	}
+		public String getSpecialist() {
+			return specialist;
+		}
 
-	public String getStaff_availability() {
-		return staff_availability;
-	}
+		public void setSpecialist(String specialist) {
+			this.specialist = specialist;
+		}
 
-	public void setStaff_availability(String staff_availability) {
-		this.staff_availability = staff_availability;
-	}
+		public Time getShiftStart() {
+			return shiftStart;
+		}
+
+		public void setShiftStart(Time shiftStart) {
+			this.shiftStart = shiftStart;
+		}
+
+		public Time getShiftEnd() {
+			return shiftEnd;
+		}
+
+		public void setShiftEnd(Time shiftEnd) {
+			this.shiftEnd = shiftEnd;
+		}
+
+		public String getEmail() {
+			return email;
+		}
+
+		public void setEmail(String email) {
+			this.email = email;
+		}
+
+		public String getPassword() {
+			return password;
+		}
+
+		public void setPassword(String password) {
+			this.password = password;
+		}
+
+		
     
 }

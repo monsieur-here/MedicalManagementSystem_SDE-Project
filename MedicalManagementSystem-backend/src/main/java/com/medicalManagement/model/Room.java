@@ -1,5 +1,7 @@
 package com.medicalManagement.model;
 
+import java.time.LocalDateTime;
+
 public class Room {
 	
 	private int room_id;
@@ -8,6 +10,17 @@ public class Room {
 	private String room_number;
 	private int patientId;
 	private String patientName;
+	private LocalDateTime CheckIn;
+	private LocalDateTime CheckOut;
+	
+	public Room(int room_id, String room_availability, String room_type, String room_number) {
+		// TODO Auto-generated constructor stub
+		this.room_id = room_id;
+		this.room_availability = room_availability;
+		this.room_type = room_type;
+		this.room_number = room_number;
+	}
+	public Room() {}
 	
 	public int getRoom_id() {
 		return room_id;
@@ -45,5 +58,19 @@ public class Room {
 	public void setPatientName(String patientName) {
 		this.patientName = patientName;
 	}
+	public LocalDateTime getCheckIn() {
+		return CheckIn;
+	}
+	public void setCheckIn(LocalDateTime checkIn) {
+		this.CheckIn = checkIn;
+	}
+	public LocalDateTime getCheckOut() {
+		return CheckOut;
+	}
+	public void setCheckOut(LocalDateTime checkOut) {
+		this.CheckOut = checkOut;
+	}
+	
+	
 	
 }
