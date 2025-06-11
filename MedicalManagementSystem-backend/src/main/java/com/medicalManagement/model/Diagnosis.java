@@ -6,6 +6,13 @@ public class Diagnosis {
 	private String diagnosis;
 	private String criticality;
 	
+	public Diagnosis(int diagnosis_id, String diagnosis, String criticality) {
+		// TODO Auto-generated constructor stub
+		this.diagnosisId = diagnosis_id;
+		this.diagnosis = diagnosis;
+		this.criticality = criticality;
+	}
+
 	public int getDiagnosisId() {
 		return diagnosisId;
 	}
@@ -29,6 +36,5 @@ public class Diagnosis {
 	public void setCriticality(String criticality) {
 		this.criticality = criticality;
 	}
-	
 	
 }

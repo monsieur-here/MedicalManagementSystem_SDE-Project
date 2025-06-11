@@ -68,6 +68,4 @@ public class Bill {
 		this.visitDescription = visitDescription;
 	}
 	
-	
-	
 }

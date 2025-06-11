@@ -1,88 +1,178 @@
 package com.medicalManagement.servlets;
 
 import com.medicalManagement.dao.StaffDAO;
-
+import com.medicalManagement.dao.StaffDAOImpl;
 import com.medicalManagement.model.StaffSupport;
+import com.medicalManagement.utils.DBConnection;
+import com.medicalManagement.utils.JsonUtil;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
+
 import java.sql.SQLException;
+
 import java.util.List;
 
 @WebServlet("/staffSupport")
 public class StaffSupportServlet extends HttpServlet {
-	Connection conn;
-    private StaffDAO dao = new StaffDAO();
+    private static final long serialVersionUID = 1L;
+	private StaffDAO staffDAO;
 
-    public void init(Connection conn) {
-        this.conn = conn;
+    @Override
+    public void init() {
+        try {
+			staffDAO = new StaffDAOImpl(DBConnection.getConnection());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
     }
 
-    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        res.setContentType("text/html");
-        PrintWriter out = res.getWriter();
-        try {
-            List<StaffSupport> list = dao.getAllStaff();
-            out.println("<html><head><title>Staff List</title></head><body>");
-            out.println("<h2>Staff List</h2>");
-            out.println("<table border='1' cellpadding='5'>");
-            out.println("<tr><th>ID</th><th>Name</th><th>Age</th><th>Gender</th></tr>");
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        
+    	resp.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+    	resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    	resp.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-            for (StaffSupport sst :list) {
-//            	p.getAge(),
-                out.printf("<tr><td>%d</td><td>%s</td><td>%s</td></tr>",
-                           sst.getId(), sst.getFullName(), sst.getGender());
+    	
+    	String idParam = req.getParameter("id");
+        String designation = req.getParameter("designation");
+        String pageParam = req.getParameter("page");
+        String sizeParam = req.getParameter("size");
+
+        resp.setContentType("application/json");
+        PrintWriter out = resp.getWriter();
+        
+//        String role = (String) req.getSession().getAttribute("role");
+//        if (!"Receptionist".equals(role)) {
+//            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+//            return;
+//        }
+
+
+        try {
+            if (idParam != null) {
+                int id = Integer.parseInt(idParam);
+                StaffSupport staff = staffDAO.getStaffById(id);
+                if (staff != null) {
+                    out.print(JsonUtil.toJson(staff));
+                } else {
+                    resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                    out.print("{\"error\": \"Staff not found\"}");
+                }
+                return;
             }
 
-            out.println("</table>");
-            out.println("</body></html>");
-            
-        } catch (SQLException e) {
-            res.setStatus(500);
-            out.print("{\"error\":\"" + e.getMessage() + "\"}");
+            int page = 1;
+            int size = 10;
+
+            try {
+                page = Math.max(1, Integer.parseInt(req.getParameter("page")));
+                size = Math.max(1, Integer.parseInt(req.getParameter("size")));
+            } catch (NumberFormatException e) {
+                System.out.println("The values are negative");
+            }
+            int offset = (page - 1) * size;
+
+            List<StaffSupport> staffList = staffDAO.getStaffByDesignation(designation, offset, size);
+            out.print(JsonUtil.toJson(staffList));
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            out.print("{\"error\": \"" + e.getMessage() + "\"}");
         }
     }
 
-    protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        StaffSupport sst = new StaffSupport();
-        sst.setFullName(req.getParameter("name"));
-//        p.setAge(Integer.parseInt(req.getParameter("age")));
-        sst.setGender(req.getParameter("gender"));
-        try {
-            dao.insertStaff(sst);
-            res.getWriter().write("{\"status\":\"success\"}");
-        } catch (SQLException e) {
-            res.setStatus(500);
-            res.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        
+    	resp.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+    	resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    	resp.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+    	
+    	StaffSupport staff = JsonUtil.fromJson(req.getReader(), StaffSupport.class);
+        boolean created = false;
+		try {
+			created = staffDAO.createStaff(staff);
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		}
+
+        resp.setContentType("application/json");
+        PrintWriter out = resp.getWriter();
+        if (created) {
+            resp.setStatus(HttpServletResponse.SC_CREATED);
+            out.print("{\"message\": \"Staff created successfully\"}");
+        } else {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            out.print("{\"error\": \"Failed to create staff\"}");
         }
     }
 
-//    protected void doPut(HttpServletRequest req, HttpServletResponse res) throws IOException {
-////        Patient p = new Patient(1, "Prajwal", 30, "Male");
-//        try {
-//            dao.updateStaff(sst);
-//            res.getWriter().write("{\"status\":\"updated\"}");
-//        } catch (SQLException e) {
-//            res.setStatus(500);
-//            res.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");
-//        }
-//    }
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+       
+    	resp.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+    	resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    	resp.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    	
+    	StaffSupport staff = JsonUtil.fromJson(req.getReader(), StaffSupport.class);
+        boolean updated = false;
+		try {
+			updated = staffDAO.updateStaff(staff);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-    protected void doDelete(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        int id = Integer.parseInt(req.getParameter("id"));
-        try {
-            dao.deleteStaff(id);
-            res.getWriter().write("{\"status\":\"deleted\"}");
-        } catch (SQLException e) {
-            res.setStatus(500);
-            res.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");
+        resp.setContentType("application/json");
+        PrintWriter out = resp.getWriter();
+        if (updated) {
+            out.print("{\"message\": \"Staff updated successfully\"}");
+        } else {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            out.print("{\"error\": \"Failed to update staff\"}");
+        }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        
+    	resp.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+    	resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    	resp.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    	
+    	String idParam = req.getParameter("id");
+        resp.setContentType("application/json");
+        PrintWriter out = resp.getWriter();
+
+        if (idParam == null) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            out.print("{\"error\": \"Missing staff ID\"}");
+            return;
+        }
+
+        int id = Integer.parseInt(idParam);
+        boolean deleted = false;
+		try {
+			deleted = staffDAO.deleteStaff(id);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+        if (deleted) {
+            out.print("{\"message\": \"Staff deleted successfully\"}");
+        } else {
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            out.print("{\"error\": \"Staff not found or failed to delete\"}");
         }
     }
 }
